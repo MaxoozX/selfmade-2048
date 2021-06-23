@@ -1,1 +1,322 @@
-<html></html>
+<!DOCType html>
+<html lang="fr">
+  <head>
+    <title>My 2048</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      #main-square {
+        width: 500px;
+        height: 500px;
+        margin: auto;
+        border-radius: 10px;
+        background-color: grey;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(4, 1fr);
+      }
+      
+      .small-square {
+        background-color: lightgrey;
+        width: 110px;
+        height: 110px;
+        margin: auto;
+        border-radius: 5px;
+        display: flex;
+        flex-direction: column;
+        align-items; center;
+        justify-content: center;
+      }
+      
+      .small-square p {
+        text-align: center;
+        font-size: 3em;
+      }
+      
+    </style>
+  </head>
+  <body>
+    <div id="main-square">
+      <div class="small-square" id="square0"></div>
+      <div class="small-square" id="square1"></div>
+      <div class="small-square" id="square2"></div>
+      <div class="small-square" id="square3"></div>
+      <div class="small-square" id="square4"></div>
+      <div class="small-square" id="square5"></div>
+      <div class="small-square" id="square6"></div>
+      <div class="small-square" id="square7"></div>
+      <div class="small-square" id="square8"></div>
+      <div class="small-square" id="square9"></div>
+      <div class="small-square" id="square10"></div>
+      <div class="small-square" id="square11"></div>
+      <div class="small-square" id="square12"></div>
+      <div class="small-square" id="square13"></div>
+      <div class="small-square" id="square14"></div>
+      <div class="small-square" id="square15"></div>
+    </div>
+    <script>
+      // Functions
+      
+      function keyUp() {
+        console.log("up");
+        for(let j = 0; j < 4; j++) {
+          for(let repetition = 0; repetition < 4; repetition++) {
+            for(let i = 0;i < 4; i++) {
+              if(i<=0 || movedAlready[i*4+j]) continue
+              let currentValue = squaresArray[i*4+j];
+              let valueOnTop = squaresArray[(i-1)*4+j];
+              
+              if(currentValue===0 && valueOnTop===0) continue;
+              
+              if(valueOnTop === 0) {
+                squaresArray[(i-1)*4+j] = squaresArray[i*4+j];
+                squaresArray[i*4+j] = 0;
+                moveMade = true
+              }
+              if(valueOnTop === currentValue) {
+                squaresArray[(i-1)*4+j] = 2 * valueOnTop;
+                movedAlready[(i-1)*4+j] = true;
+                squaresArray[i*4+j] = 0;
+                moveMade = true
+              }
+            }
+          }
+        }
+      }
+      
+      function keyDown() {
+        console.log("down");
+        for(let j = 0; j < 4; j++) {
+          for(let repetition = 0; repetition < 4; repetition++) {
+            for(let i = 3;i >= 0; i--) {
+              if(i>=3 || movedAlready[i*4+j]) continue
+              let currentValue = squaresArray[i*4+j];
+              let valueOnBottom = squaresArray[(i+1)*4+j];
+              
+              if(currentValue===0 && valueOnBottom===0) continue;
+              
+              if(valueOnBottom === 0) {
+                squaresArray[(i+1)*4+j] = currentValue;
+                squaresArray[i*4+j] = 0;
+                moveMade = true
+              }
+              if(valueOnBottom === currentValue) {
+                squaresArray[(i+1)*4+j] = 2 * valueOnBottom;
+                movedAlready[(i+1)*4+j] = true;
+                squaresArray[i*4+j] = 0;
+                moveMade = true
+              }
+            }
+          }
+        }
+      }
+      
+      function keyLeft() {
+        console.log("left");
+        for(let i = 0;i < 4; i++) {
+          for(let repetition = 0; repetition < 4; repetition++) {
+            for(let j = 0; j < 4; j++) {
+              if(j<=0 || movedAlready[i*4+j]) continue
+              let currentValue = squaresArray[i*4+j];
+              let valueOnLeft = squaresArray[i*4+j-1];
+              
+              if(currentValue === 0 && valueOnLeft === 0) continue;
+              
+              if(valueOnLeft === 0) {
+                squaresArray[i*4+j-1] = currentValue;
+                squaresArray[i*4+j] = 0;
+                moveMade = true
+              }
+              if(valueOnLeft === currentValue) {
+                squaresArray[i*4+j-1] = 2 * valueOnLeft;
+                movedAlready[i*4+j-1] = true;
+                squaresArray[i*4+j] = 0;
+                moveMade = true
+              }
+            }
+          }
+        }
+      }
+      
+      function keyRight() {
+        console.log("right");
+        for(let i = 0;i < 4; i++) {
+          for(let repetition = 0; repetition < 4; repetition++) {
+            for(let j = 3; j >= 0; j--) {
+              if(j>=3 || movedAlready[i*4+j]) continue
+              let currentValue = squaresArray[i*4+j];
+              let valueOnRight = squaresArray[i*4+j+1];
+              
+              if(currentValue===0 && valueOnRight === 0) continue;
+              
+              if(valueOnRight === 0) {
+                squaresArray[i*4+j+1] = currentValue;
+                squaresArray[i*4+j] = 0;
+                moveMade = true
+              }
+              if(valueOnRight === currentValue) {
+                squaresArray[i*4+j+1] = 2 * valueOnRight;
+                movedAlready[i*4+j+1] = true;
+                squaresArray[i*4+j] = 0;
+                moveMade = true
+              }
+            }
+          }
+        }
+      }
+      
+      function makeDisplayMatchState() {
+        for(let i = 0;i < 16; i++) {
+          let curSquareValue = squaresArray[i];
+          if(curSquareValue === 0) {
+            squaresOnDisplay[i].innerHTML = `<p></p>`;
+            squaresOnDisplay[i].style.backgroundColor = "lightgrey";
+          } else if(curSquareValue === 2){
+            squaresOnDisplay[i].innerHTML = `<p>${curSquareValue}</p>`;
+            squaresOnDisplay[i].style.backgroundColor = "#ffece5";
+          } else if(curSquareValue === 4){
+            squaresOnDisplay[i].innerHTML = `<p>${curSquareValue}</p>`;
+            squaresOnDisplay[i].style.backgroundColor = "#ffd9cc";
+          } else if(curSquareValue === 8){
+            squaresOnDisplay[i].innerHTML = `<p>${curSquareValue}</p>`;
+            squaresOnDisplay[i].style.backgroundColor = "#ffc7b2";
+          } else if(curSquareValue === 16){
+            squaresOnDisplay[i].innerHTML = `<p>${curSquareValue}</p>`;
+            squaresOnDisplay[i].style.backgroundColor = "#ffb499";
+          } else if(curSquareValue === 32){
+            squaresOnDisplay[i].innerHTML = `<p>${curSquareValue}</p>`;
+            squaresOnDisplay[i].style.backgroundColor = "#ffa27f";
+          } else if(curSquareValue === 64){
+            squaresOnDisplay[i].innerHTML = `<p>${curSquareValue}</p>`;
+            squaresOnDisplay[i].style.backgroundColor = "#ff8f66";
+          } else if(curSquareValue === 128){
+            squaresOnDisplay[i].innerHTML = `<p>${curSquareValue}</p>`;
+            squaresOnDisplay[i].style.backgroundColor = "#ff4c4c";
+          } else if(curSquareValue === 256){
+            squaresOnDisplay[i].innerHTML = `<p>${curSquareValue}</p>`;
+            squaresOnDisplay[i].style.backgroundColor = "#ff6a32";
+          } else if(curSquareValue === 512){
+            squaresOnDisplay[i].innerHTML = `<p>${curSquareValue}</p>`;
+            squaresOnDisplay[i].style.backgroundColor = "#ff5719";
+          } else if(curSquareValue === 1024){
+            squaresOnDisplay[i].innerHTML = `<p>${curSquareValue}</p>`;
+            squaresOnDisplay[i].style.backgroundColor = "#ff4500";
+          } else if(curSquareValue === 2048){
+            squaresOnDisplay[i].innerHTML = `<p>${curSquareValue}</p>`;
+            squaresOnDisplay[i].style.backgroundColor = "#cc3700";
+          }
+        }
+      }
+      
+      function resetMoveArray() {
+        movedAlready = [
+          false, false, false, false,
+          false, false, false, false,
+          false, false, false, false,
+          false, false, false, false,
+        ];
+      }
+      
+      function getRandomInt(max) {
+        return Math.floor(Math.random() * max);
+      }
+      
+      function spawnRandomTile() {
+        // Test that the thing is not full
+        console.log("spawing");
+        
+        var emptyTiles = [];
+        var count = 0
+        for(let i = 0;i < 16; i++) {
+          if(squaresArray[i] === 0) {
+            emptyTiles.push(i);
+            count++;
+          }
+        }
+        
+        var tileToAdd = getRandomInt(count);
+        var numberOnTile = (getRandomInt(8) === 0) ? 4 : 2;
+        squaresArray[emptyTiles[tileToAdd]] = numberOnTile;
+        
+      }
+      
+      function isGridFull() {
+        let result = true
+        for(const number of squaresArray){
+          if(number === 0){
+            result = false
+          }
+        }
+        return result;
+      }
+      
+      function afterTileMove() {
+        if(moveMade) {
+          spawnRandomTile();
+        } else if(isGridFull()) {
+          // Le joueur a perdu
+          alert("Vous avez perdu")
+        }
+        makeDisplayMatchState();
+        resetMoveArray();
+        moveMade = false
+      }
+      
+      function beforeTileMove() {
+        squaresArrayBis = [...squaresArray];
+      }
+      
+      function newGame() {
+        squaresArray = [
+          0, 0, 0, 0,
+          0, 0, 0, 0,
+          0, 0, 0, 0,
+          0, 0, 0, 0,
+        ];
+        squaresArrayBis = [...squaresArray];
+        movedAlready = [
+          false, false, false, false,
+          false, false, false, false,
+          false, false, false, false,
+          false, false, false, false,
+        ];
+        moveMade = false;
+        spawnRandomTile();
+        spawnRandomTile();
+        makeDisplayMatchState();
+      }
+      
+      // Event listener
+      window.addEventListener("keydown", (event) => {
+        if(event.key === "ArrowUp") {
+          keyUp();
+          afterTileMove()
+        } else if(event.key === "ArrowDown") {
+          keyDown();
+          afterTileMove()
+        } else if(event.key === "ArrowLeft") {
+          keyLeft();
+          afterTileMove()
+        } else if(event.key === "ArrowRight") {
+          keyRight();
+          afterTileMove()
+        }
+      });
+      
+      var squaresArray;
+        
+      var squaresArrayBis;;
+        
+      var movedAlready;
+        
+      var moveMade = false;
+        
+      var squaresOnDisplay = document.getElementsByClassName("small-square");
+      
+      newGame();
+      
+    </script>
+  </body>
+</html>
